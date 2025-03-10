@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="ActorReposLib">
+      <HintPath>..\..\..\ActorReposLib-master\ActorReposLib-master\ActorReposLib\bin\Debug\net8.0\ActorReposLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
