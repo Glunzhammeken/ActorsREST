@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ActorReposLib;
+using ActorsREST.Records;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,40 +15,105 @@ namespace ActorsREST.Controllers
         {
             _actorReposList = actorReposList;
         }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        
+
         // GET: api/<ActorsController>
         [HttpGet]
-        public IEnumerable<Actor> Get()
+        public ActionResult<IEnumerable<Actor>> Get()
         {
-            return _actorReposList.GetActors();
+            IEnumerable<Actor> result = _actorReposList.GetActors();
+            if (result.Count() > 0)
+            {
+                return Ok(result);
+            }
+            return NoContent();
         }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
 
         // GET api/<ActorsController>/5
         [HttpGet("{id}")]
-        public Actor? Get(int id)
+        public ActionResult<Actor> Get(int id)
         {
-            return _actorReposList.GetActorById(id);
+            Actor? actor = _actorReposList.GetActorById(id);
+            if(actor != null)
+            {
+                return Ok(actor);
+            }
+            return NoContent();
         }
-
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         // POST api/<ActorsController>
         [HttpPost]
-        public Actor Post([FromBody] Actor NewActor)
+        public ActionResult<Actor> Post([FromBody] ActorRecord NewActorRecord)
         {
-            return _actorReposList.Add(NewActor);
-
+            try
+            {
+                Actor actorConverted = RecordHelper.ConvertActorRecord(NewActorRecord);
+                Actor actor = _actorReposList.Add(actorConverted);
+                return Created("*/*" + actorConverted.Id, actor);
+            }
+            catch(ArgumentNullException ex) 
+            {
+                return BadRequest("Indeholder nulls" + ex.Message);
+            } 
+            catch(ArgumentOutOfRangeException ex)
+            {
+                return BadRequest("Out of range" + ex.Message);
+            }
+            catch(ArgumentException ex) 
+            {
+                return BadRequest("" + ex.Message);
+            }
         }
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         // PUT api/<ActorsController>/5
         [HttpPut("{id}")]
-        public Actor? Put(int id, [FromBody] Actor NewActor)
+        public ActionResult<Actor> Put(int id, [FromBody] ActorRecord NewActorRecord)
         {
-            return _actorReposList.UpdateActor(id, NewActor);
-        }
+            try
+            {
+                Actor actorConverted = RecordHelper.ConvertActorRecord(NewActorRecord);
+                Actor? updated = _actorReposList.UpdateActor(id, actorConverted);
 
+                if(updated != null)
+                {
+                    return Ok(updated);
+                }
+                return NotFound();
+                
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest("Indeholder nulls" + ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest("Out of range" + ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest("" + ex.Message);
+            }
+        }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         // DELETE api/<ActorsController>/5
         [HttpDelete("{id}")]
-        public Actor Delete(int id)
+        public ActionResult<Actor> Delete(int id)
         {
-            return _actorReposList.Remove(id);
+            Actor deleted = _actorReposList.Remove(id);
+            if(deleted != null)
+            {
+                return Ok(deleted);
+
+            }
+            return NotFound();
         }
     }
 }
