@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ActorReposLib;
 using ActorsREST.Records;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,10 +18,12 @@ namespace ActorsREST.Controllers
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        
+
 
         // GET: api/<ActorsController>
+        
         [HttpGet]
+        [EnableCors("AllowAll")]
         public ActionResult<IEnumerable<Actor>> Get()
         {
             IEnumerable<Actor> result = _actorReposList.GetActors();
@@ -34,7 +37,9 @@ namespace ActorsREST.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
 
         // GET api/<ActorsController>/5
+        
         [HttpGet("{id}")]
+        [EnableCors("AllowAll")]
         public ActionResult<Actor> Get(int id)
         {
             Actor? actor = _actorReposList.GetActorById(id);
@@ -47,7 +52,9 @@ namespace ActorsREST.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         // POST api/<ActorsController>
+        
         [HttpPost]
+        [DisableCors]
         public ActionResult<Actor> Post([FromBody] ActorRecord NewActorRecord)
         {
             try
