@@ -24,9 +24,13 @@ namespace ActorsREST.Controllers
         
         [HttpGet]
         [EnableCors("AllowAll")]
-        public ActionResult<IEnumerable<Actor>> Get()
+        public ActionResult<IEnumerable<Actor>> GetActors(
+            [FromQuery] string? name,
+            [FromQuery] string? sortby,
+            [FromQuery] int birthyearbefore,
+            [FromQuery] int birthyearafter)
         {
-            IEnumerable<Actor> result = _actorReposList.GetActors();
+            IEnumerable<Actor> result = _actorReposList.GetActors(Birthyearbefore:birthyearbefore,Birthyearafter:birthyearafter,name:name,sortBy:sortby);
             if (result.Count() > 0)
             {
                 return Ok(result);
@@ -54,7 +58,7 @@ namespace ActorsREST.Controllers
         // POST api/<ActorsController>
         
         [HttpPost]
-        [DisableCors]
+        
         public ActionResult<Actor> Post([FromBody] ActorRecord NewActorRecord)
         {
             try
