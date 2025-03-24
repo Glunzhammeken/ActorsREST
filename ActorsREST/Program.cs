@@ -8,7 +8,7 @@ builder.Services.AddCors(options =>
                               policy =>
                               {
                                   policy.AllowAnyOrigin().
-                                  WithMethods("GET","PUT", "DELETE").
+                                  AllowAnyMethod().
                                   AllowAnyHeader().
                                   SetPreflightMaxAge(TimeSpan.FromSeconds(14440));
                               });
