@@ -16,10 +16,9 @@ namespace ActorsREST.Controllers
         {
             _actorReposList = actorReposList;
         }
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-
-
         // GET: api/<ActorsController>
         
         [HttpGet]
